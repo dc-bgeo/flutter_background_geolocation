@@ -1,0 +1,30 @@
+# Before this workflow can publish anything, enable pub.dev's Automated
+# Publishing for this package (one-time, browser step, done by a repo/pub.dev
+# admin — not by CI):
+#   pub.dev -> package -> Admin -> Automated publishing -> enable GitHub
+#   Actions, for repository dc-bgeo/flutter_background_geolocation,
+#   tag pattern v{{version}}. (Note: pub.dev only allows enabling this AFTER
+#   the package's first version has been published manually.)
+# Without that, pub.dev has no OIDC trust relationship with this repo and
+# `dart pub publish` below will be rejected even though CI runs cleanly.
+name: publish
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # pub.dev OIDC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: dart analyze
+      - run: flutter test
+      - uses: dart-lang/setup-dart@v1 # provides the pub.dev OIDC token
+      - run: dart pub publish --force

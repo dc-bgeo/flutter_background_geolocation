@@ -1,0 +1,40 @@
+group = "com.bgeo.flutter"
+version = "0.1.0"
+
+buildscript {
+    repositories { google(); mavenCentral() }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.7.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    // The engine AAR owns the "com.bgeo" namespace; the bridge namespaces its
+    // own R separately (same convention as the RN bridge).
+    namespace "com.bgeo.flutter"
+    compileSdk 36
+    defaultConfig { minSdk 24 }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = "17" }
+}
+
+repositories {
+    maven { url("$projectDir/libs") }   // closed engine AAR ships inside the pub package
+    google()
+    mavenCentral()
+}
+
+dependencies {
+    // Closed-source engine (FusedLocation, motion machine, HTTP queue). Its POM
+    // pulls play-services-location + okhttp transitively.
+    api "com.bgeo:bgeo-android:0.12.1"
+    // App-level foreground signal for the logger's debounce flush.
+    implementation "androidx.lifecycle:lifecycle-process:2.8.7"
+}

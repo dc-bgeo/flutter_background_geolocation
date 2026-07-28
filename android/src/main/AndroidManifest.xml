@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Processes where the Flutter plugin never loads (boot / geofence
+             restart) find the headless sink through this meta-data. -->
+        <meta-data
+            android:name="com.bgeo.HEADLESS_DISPATCHER"
+            android:value="com.bgeo.flutter.FlutterHeadlessDispatcher" />
+    </application>
+</manifest>

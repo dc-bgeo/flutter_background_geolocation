@@ -1,0 +1,22 @@
+PODS:
+  - bgeo_background_geolocation (0.1.0):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - bgeo_background_geolocation (from `.symlinks/plugins/bgeo_background_geolocation/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  bgeo_background_geolocation:
+    :path: ".symlinks/plugins/bgeo_background_geolocation/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  bgeo_background_geolocation: 3292484d49af02e3cd5d3c713a6a7203ce111819
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+
+PODFILE CHECKSUM: 3ee458f4f32ae5fc3cb9faf062f0aa009b07739f
+
+COCOAPODS: 1.16.2

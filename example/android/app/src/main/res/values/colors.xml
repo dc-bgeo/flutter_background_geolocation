@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Adaptive-icon background, referenced by mipmap-anydpi-v26/ic_launcher.xml.
+         Same accent as the app palette (theme.dart) and the web console. -->
+    <color name="ic_launcher_background">#3A6FF0</color>
+</resources>

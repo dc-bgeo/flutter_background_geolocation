@@ -1,0 +1,7 @@
+docs/
+.superpowers/
+build/
+example/build/
+tool/
+*.log
+*.iml
