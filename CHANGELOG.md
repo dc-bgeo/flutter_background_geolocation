@@ -1,3 +1,9 @@
+## 0.1.1
+
+* No functional changes. Release-infrastructure housekeeping: first version
+  published through CI (GitHub Actions → pub.dev automated publishing);
+  engine binaries verified current (BGeoCore / bgeo-android 0.12.1).
+
 ## 0.1.0
 
 Initial release.
