@@ -1,3 +1,14 @@
+## 0.1.4
+
+* **Breaking (types):** `Location.isMoving` is now `bool?` instead of `bool`.
+  Both engines send `is_moving: null` while a cold-started session's first
+  fixes are still in the unconfirmed-MOVING probing window (up to
+  `stopTimeout` minutes after `start()`); the decoder used to collapse that
+  to `false`, so an app could not tell "not yet known" from "stationary".
+  If you don't care about the difference, replace `location.isMoving` with
+  `location.isMoving ?? false`. `MotionChangeEvent.isMoving` is unchanged
+  (non-nullable) — the engines always send a real verdict there.
+
 ## 0.1.3
 
 * Engine 0.13.1 fixes two payload defects; no Dart API changes.
