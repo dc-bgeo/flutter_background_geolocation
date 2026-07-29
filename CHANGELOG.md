@@ -1,3 +1,17 @@
+## 0.1.2
+
+* Engine 0.13.0 embeds the production licence signing key in place of the
+  development key that previously shipped. Licence tokens issued or re-signed
+  before 2026-07-29 will not verify against this build — copy the current
+  token from your dashboard at https://bgeo.dev before upgrading.
+* iOS: the vendored `BGeoCore.xcframework` now ships an Apple privacy manifest
+  (`PrivacyInfo.xcprivacy`) declaring precise/coarse location collection for
+  app functionality and the `NSUserDefaults` required-reason API (`CA92.1`).
+* Android: the engine AAR's Maven coordinate moved from
+  `com.bgeo:bgeo-android:0.12.1` to `dev.bgeo:bgeo-android:0.13.0`. It's
+  vendored in this package's local Maven repo per the documented setup, so no
+  action is needed unless you hand-wrote the old coordinate directly.
+
 ## 0.1.1
 
 * No functional changes. Release-infrastructure housekeeping: first version

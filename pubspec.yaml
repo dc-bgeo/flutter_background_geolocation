@@ -1,6 +1,6 @@
 name: bgeo_background_geolocation
 description: Reliable background geolocation for Flutter (BGeo engine) — iOS & Android. Motion-aware tracking, offline HTTP queue, geofences, headless events.
-version: 0.1.1
+version: 0.1.2
 homepage: https://bgeo.dev
 repository: https://github.com/dc-bgeo/flutter_background_geolocation
 
