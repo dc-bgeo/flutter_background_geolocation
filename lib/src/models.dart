@@ -83,7 +83,15 @@ class Location {
   final Coords coords;
   final MotionActivity activity;
   final Battery battery;
-  final bool isMoving;
+  /// Motion-state machine's verdict at the time of this fix.
+  ///
+  /// `null` while a cold-started session's first fixes are still in the
+  /// unconfirmed-MOVING probing window — up to [Config.stopTimeout] minutes
+  /// (default 5) after `start()`. Both engines send null there by design so a
+  /// server falls back to speed rather than recording a phantom "started
+  /// moving". Treat `null` the same as `false` unless you specifically care
+  /// about the difference.
+  final bool? isMoving;
   final bool? sample;
   final String? event;
   final Map<String, dynamic>? extras;
@@ -99,7 +107,7 @@ class Location {
         coords = Coords.fromMap(_castMap(map['coords'])),
         activity = MotionActivity.fromMap(_castMap(map['activity'])),
         battery = Battery.fromMap(_castMap(map['battery'])),
-        isMoving = map['is_moving'] as bool? ?? false,
+        isMoving = map['is_moving'] as bool?,
         sample = map['sample'] as bool?,
         event = map['event'] as String?,
         extras = map['extras'] == null ? null : _castMap(map['extras']);

@@ -30,6 +30,12 @@ void main() {
     expect(l.raw['uuid'], 'abc-123');
   });
 
+  test('Location.isMoving stays null during the probing window', () {
+    final l = Location.fromMap({...nativeLocation, 'is_moving': null});
+    expect(l.isMoving, isNull);
+    expect(l.raw['is_moving'], isNull);
+  });
+
   test('MotionChangeEvent tolerates a null location (first event of a session)', () {
     final e = MotionChangeEvent.fromMap({'isMoving': true, 'location': null});
     expect(e.isMoving, true);
