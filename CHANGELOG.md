@@ -1,3 +1,14 @@
+## 0.1.3
+
+* Engine 0.13.1 fixes two payload defects; no Dart API changes.
+* `onGeofencesChange`: geofences in the `off` list now carry their real
+  `radius`/`latitude`/`longitude` again. Removing an actively monitored
+  geofence used to emit an identifier-only record, which `Geofence.fromMap`
+  decoded as zeroed geometry.
+* `providerState` / `onProviderChange`: `accuracyAuthorization` is now
+  populated (`0` = full, `1` = reduced) instead of always decoding to `null`.
+  On Android it reports reduced when only `ACCESS_COARSE_LOCATION` is granted.
+
 ## 0.1.2
 
 * Engine 0.13.0 embeds the production licence signing key in place of the
