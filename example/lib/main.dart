@@ -28,6 +28,18 @@ void main() {
   runApp(const BGeoExampleApp());
 }
 
+/// Redacts an `onAuthorization` event (`{success, accessToken, refreshToken}`,
+/// per the engine's authorization body) down to `success` plus token-presence
+/// booleans, for the Logs screen/bgeo.db//device/logs — none of which should
+/// ever see a live JWT.
+Map<String, Object?> redactAuthorizationLogData(AuthorizationEvent event) {
+  return {
+    'success': event.success,
+    'hasAccessToken': (event.accessToken ?? '').isNotEmpty,
+    'hasRefreshToken': (event.refreshToken ?? '').isNotEmpty,
+  };
+}
+
 class BGeoExampleApp extends StatefulWidget {
   const BGeoExampleApp({super.key});
 
@@ -130,10 +142,15 @@ class _BGeoExampleAppState extends State<BGeoExampleApp> {
     });
 
     BackgroundGeolocation.onAuthorization((event) {
+      // event.raw is `{success, accessToken, refreshToken}` — live JWTs.
+      // redactAuthorizationLogData strips them to a token-presence signal
+      // before this goes anywhere near the Logs screen/bgeo.db//device/logs;
+      // the real event (with the real tokens) still goes to
+      // persistRotatedTokens below.
       logEvent(
         'onAuthorization',
         event.success ? 'refreshed' : 'failed',
-        event.raw,
+        redactAuthorizationLogData(event),
         event.success ? LogLevel.info : LogLevel.error,
       );
       persistRotatedTokens(event).catchError((_) {});

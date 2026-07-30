@@ -83,12 +83,14 @@ const configSections = <ConfigSection>[
         type: FieldType.number,
         unit: 'm',
         defaultValue: 10.0),
+    // CORRECTED — engine default 200 on both platforms (core/ios/Sources/BGGeoEngine.mm:793,
+    // core/android/.../BGGeoEngine.kt:636), not 25.
     ConfigField(
         key: 'stationaryRadius',
         label: 'Stationary radius',
         type: FieldType.number,
         unit: 'm',
-        defaultValue: 25.0),
+        defaultValue: 200.0),
     ConfigField(
         key: 'stationaryDistanceFilter',
         label: 'Stationary distance filter',
@@ -181,12 +183,21 @@ const configSections = <ConfigSection>[
         type: FieldType.number,
         unit: 'ms',
         defaultValue: 0),
+    // CORRECTED, WITH A KNOWN CROSS-PLATFORM DIVERGENCE — iOS engine default is 50
+    // (core/ios/Sources/BGGeoEngine.mm:1556, deliberate: iOS's confidence scale is coarse
+    // Low/Med/High=33/66/100, and 50 preserves "anything above Low counts as moving");
+    // Android engine default is 75 (core/android/.../BGGeoEngine.kt:870). This schema has
+    // no per-platform default mechanism, so one number must serve both — using iOS's 50
+    // here (matches iOS exactly; on Android it's a more permissive threshold than Android's
+    // own 75, trading a slightly higher false-"moving" rate for a lower risk of missing real
+    // movement, consistent with this app's tracking-reliability priority). See the parity
+    // report for the full discussion.
     ConfigField(
         key: 'minimumActivityRecognitionConfidence',
         label: 'Min AR confidence',
         type: FieldType.number,
         unit: '%',
-        defaultValue: 75),
+        defaultValue: 50),
     ConfigField(
         key: 'disableMotionActivityUpdates',
         label: 'Disable motion updates',
@@ -225,14 +236,19 @@ const configSections = <ConfigSection>[
         defaultValue: false,
         hint: 'explicit Sync still uploads on cellular'),
     ConfigField(key: 'batchSync', label: 'Batch sync', type: FieldType.boolean, defaultValue: false),
+    // CORRECTED — engine default -1/unbatched on both platforms (core/ios/Sources/
+    // BGGeoHttpStore.mm:74,183, core/android/.../BGGeoHttpStore.kt:60,198), not 50;
+    // DeviceLink sets 50 once linked, independently of this default.
     ConfigField(
-        key: 'maxBatchSize', label: 'Max batch size', type: FieldType.number, defaultValue: 50),
+        key: 'maxBatchSize', label: 'Max batch size', type: FieldType.number, defaultValue: -1),
+    // CORRECTED — engine default 30000 on both platforms (core/ios/Sources/
+    // BGGeoHttpStore.mm:185, core/android/.../BGGeoHttpStore.kt:199), not 60000.
     ConfigField(
         key: 'httpTimeoutMs',
         label: 'HTTP timeout',
         type: FieldType.number,
         unit: 'ms',
-        defaultValue: 60000),
+        defaultValue: 30000),
   ]),
   ConfigSection('Persistence', [
     ConfigField(
