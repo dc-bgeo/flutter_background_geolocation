@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         field: field,
                         value: _overrides.containsKey(field.key)
                             ? _overrides[field.key]
-                            : field.defaultValue,
+                            : field.resolvedDefault,
                         overridden: _overrides.containsKey(field.key),
                         onChanged: (v) => _setValue(field.key, v),
                       ),
@@ -461,7 +461,7 @@ class _FieldRow extends StatelessWidget {
                   if (parsed == null) return;
                   // Keep the schema default's numeric kind — the plugin's Config
                   // is typed int vs double per key.
-                  onChanged(field.defaultValue is double ? parsed.toDouble() : parsed.toInt());
+                  onChanged(field.resolvedDefault is double ? parsed.toDouble() : parsed.toInt());
                 },
               ),
             FieldType.string => _TextValueInput(

@@ -115,7 +115,7 @@ void main() {
     final overrides = <String, Object?>{};
     for (final section in configSections) {
       for (final field in section.fields) {
-        overrides[field.key] = field.defaultValue;
+        overrides[field.key] = field.resolvedDefault;
       }
     }
     final map = bootConfig(overrides).toMap();

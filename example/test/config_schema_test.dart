@@ -17,22 +17,46 @@ Object? _fieldDefault(String key) {
 
 void main() {
   test('stationaryRadius matches both engines (200 m)', () {
-    expect(_fieldDefault('stationaryRadius'), 200.0);
+    expect(resolveDefault(_fieldDefault('stationaryRadius'), isIOS: true), 200.0);
+    expect(resolveDefault(_fieldDefault('stationaryRadius'), isIOS: false), 200.0);
   });
 
   test('httpTimeoutMs matches both engines (30000 ms)', () {
-    expect(_fieldDefault('httpTimeoutMs'), 30000);
+    expect(resolveDefault(_fieldDefault('httpTimeoutMs'), isIOS: true), 30000);
+    expect(resolveDefault(_fieldDefault('httpTimeoutMs'), isIOS: false), 30000);
   });
 
   test('maxBatchSize matches both engines (-1, unbatched)', () {
-    expect(_fieldDefault('maxBatchSize'), -1);
+    expect(resolveDefault(_fieldDefault('maxBatchSize'), isIOS: true), -1);
+    expect(resolveDefault(_fieldDefault('maxBatchSize'), isIOS: false), -1);
   });
 
-  // iOS engine default is 50; Android engine default is 75 (deliberate
-  // divergence — see BGGeoEngine.mm's comment on the coarse iOS confidence
-  // scale). This schema has no per-platform default mechanism, so it uses
-  // iOS's value here — see the parity report for the full discussion.
-  test('minimumActivityRecognitionConfidence matches the iOS engine default (50)', () {
-    expect(_fieldDefault('minimumActivityRecognitionConfidence'), 50);
+  // iOS engine default is 50 (BGGeoEngine.mm:1576); Android engine default is
+  // 75 (BGGeoEngine.kt:870) — deliberate divergence (iOS's confidence scale is
+  // coarse). Each platform now resolves to its OWN engine's literal default.
+  test('minimumActivityRecognitionConfidence resolves per platform', () {
+    expect(resolveDefault(_fieldDefault('minimumActivityRecognitionConfidence'), isIOS: true), 50);
+    expect(
+        resolveDefault(_fieldDefault('minimumActivityRecognitionConfidence'), isIOS: false), 75);
+  });
+
+  group('resolveDefault', () {
+    test('returns the iOS value on iOS and the Android value on Android for a divergent field',
+        () {
+      const divergent = PlatformDefault(ios: 50, android: 75);
+      expect(resolveDefault(divergent, isIOS: true), 50);
+      expect(resolveDefault(divergent, isIOS: false), 75);
+    });
+
+    test('a single-valued default resolves identically on both platforms', () {
+      expect(resolveDefault(200.0, isIOS: true), 200.0);
+      expect(resolveDefault(200.0, isIOS: false), 200.0);
+      expect(resolveDefault('BALANCED', isIOS: true), 'BALANCED');
+      expect(resolveDefault('BALANCED', isIOS: false), 'BALANCED');
+      expect(resolveDefault(false, isIOS: true), false);
+      expect(resolveDefault(false, isIOS: false), false);
+      expect(resolveDefault(null, isIOS: true), null);
+      expect(resolveDefault(null, isIOS: false), null);
+    });
   });
 }

@@ -5,7 +5,28 @@
 /// set.
 library;
 
+import 'dart:io' show Platform;
+
 enum FieldType { boolean, number, enumeration, string }
+
+/// A default that differs between the iOS and Android engines — see
+/// [resolveDefault]. Use only when the two engines' own literal fallbacks
+/// genuinely disagree (rare: `minimumActivityRecognitionConfidence` below is
+/// currently the one known case). Most fields keep a single [ConfigField.defaultValue].
+class PlatformDefault {
+  final Object ios;
+  final Object android;
+
+  const PlatformDefault({required this.ios, required this.android});
+}
+
+/// Resolves a field's `defaultValue` (single value, or a [PlatformDefault]
+/// pair) for one platform. `isIOS` is an explicit parameter rather than
+/// reading `Platform.isIOS` internally, so this stays a pure function —
+/// unit-testable for both platforms from a single `flutter test` run, no
+/// platform faking needed.
+Object? resolveDefault(Object? value, {required bool isIOS}) =>
+    value is PlatformDefault ? (isIOS ? value.ios : value.android) : value;
 
 class EnumOption {
   final String label;
@@ -38,6 +59,11 @@ class ConfigField {
     this.platform,
     this.hint,
   });
+
+  /// [defaultValue] resolved for the CURRENT platform (`dart:io`'s
+  /// `Platform.isIOS`). Passes through unchanged unless `defaultValue` is a
+  /// [PlatformDefault].
+  Object? get resolvedDefault => resolveDefault(defaultValue, isIOS: Platform.isIOS);
 }
 
 class ConfigSection {
@@ -83,7 +109,7 @@ const configSections = <ConfigSection>[
         type: FieldType.number,
         unit: 'm',
         defaultValue: 10.0),
-    // CORRECTED — engine default 200 on both platforms (core/ios/Sources/BGGeoEngine.mm:793,
+    // CORRECTED — engine default 200 on both platforms (core/ios/Sources/BGGeoEngine.mm:809,
     // core/android/.../BGGeoEngine.kt:636), not 25.
     ConfigField(
         key: 'stationaryRadius',
@@ -183,21 +209,17 @@ const configSections = <ConfigSection>[
         type: FieldType.number,
         unit: 'ms',
         defaultValue: 0),
-    // CORRECTED, WITH A KNOWN CROSS-PLATFORM DIVERGENCE — iOS engine default is 50
-    // (core/ios/Sources/BGGeoEngine.mm:1556, deliberate: iOS's confidence scale is coarse
-    // Low/Med/High=33/66/100, and 50 preserves "anything above Low counts as moving");
-    // Android engine default is 75 (core/android/.../BGGeoEngine.kt:870). This schema has
-    // no per-platform default mechanism, so one number must serve both — using iOS's 50
-    // here (matches iOS exactly; on Android it's a more permissive threshold than Android's
-    // own 75, trading a slightly higher false-"moving" rate for a lower risk of missing real
-    // movement, consistent with this app's tracking-reliability priority). See the parity
-    // report for the full discussion.
+    // DIVERGENT BY DESIGN — iOS engine default is 50 (core/ios/Sources/BGGeoEngine.mm:1576,
+    // deliberate: iOS's confidence scale is coarse Low/Med/High=33/66/100, and 50 preserves
+    // "anything above Low counts as moving"); Android engine default is 75
+    // (core/android/.../BGGeoEngine.kt:870). Resolved per platform via [resolveDefault] so
+    // each platform's Settings screen displays and resets to its OWN engine's real default.
     ConfigField(
         key: 'minimumActivityRecognitionConfidence',
         label: 'Min AR confidence',
         type: FieldType.number,
         unit: '%',
-        defaultValue: 50),
+        defaultValue: PlatformDefault(ios: 50, android: 75)),
     ConfigField(
         key: 'disableMotionActivityUpdates',
         label: 'Disable motion updates',
@@ -383,12 +405,13 @@ const configSections = <ConfigSection>[
   ]),
 ];
 
-/// Default value per key (`baseConfig` wins over schema defaults).
+/// Default value per key (`baseConfig` wins over the schema's, possibly
+/// per-platform, default).
 Object? defaultFor(String key) {
   if (baseConfig.containsKey(key)) return baseConfig[key];
   for (final section in configSections) {
     for (final field in section.fields) {
-      if (field.key == key) return field.defaultValue;
+      if (field.key == key) return field.resolvedDefault;
     }
   }
   return null;
