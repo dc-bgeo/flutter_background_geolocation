@@ -3,8 +3,6 @@
 /// upload-queue tools.
 library;
 
-import 'dart:io' show Platform;
-
 import 'package:bgeo_background_geolocation/bgeo_background_geolocation.dart' hide State;
 import 'package:flutter/material.dart';
 
@@ -29,8 +27,6 @@ const _stateFields = [
   'sessionEngineActive',
   'serviceSessionActive',
 ];
-
-String get _platformName => Platform.isIOS ? 'ios' : 'android';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -75,12 +71,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const _LinkSection(),
           const _AppearanceSection(),
           for (final section in configSections)
-            if (section.fields.any((f) => f.platform == null || f.platform == _platformName))
+            if (section.fields.any((f) => f.appliesToCurrentPlatform))
               _Section(
                 title: section.title,
                 children: [
                   for (final field in section.fields)
-                    if (field.platform == null || field.platform == _platformName)
+                    if (field.appliesToCurrentPlatform)
                       _FieldRow(
                         field: field,
                         value: _overrides.containsKey(field.key)

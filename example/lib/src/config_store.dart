@@ -7,6 +7,7 @@
 library;
 
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:bgeo_background_geolocation/bgeo_background_geolocation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,12 +68,25 @@ Future<void> applyOverride(String key, Object? value) async {
 }
 
 /// Drop all overrides and re-apply the defaults for every overridden key.
-Future<void> resetOverrides() async {
+/// Keys tagged for the OTHER platform are skipped — the engine that's about
+/// to receive this setConfig call ignores them anyway (they can only be in
+/// [loadOverrides] from before a field was hidden, since the Settings
+/// screen itself won't let this platform set one going forward), and
+/// pushing them would just be noise in the log the console exists to
+/// display. [isIOS] defaults to the running platform (`dart:io`'s
+/// `Platform.isIOS`, which has no fake — a null default is used instead of a
+/// direct default value so tests can pass it explicitly).
+Future<void> resetOverrides({bool? isIOS}) async {
+  final effectiveIsIOS = isIOS ?? Platform.isIOS;
   final overrides = await loadOverrides();
-  if (overrides.isNotEmpty) {
+  final keys = overrides.keys.where((key) {
+    final field = fieldFor(key);
+    return field == null || appliesToPlatform(field, isIOS: effectiveIsIOS);
+  });
+  if (keys.isNotEmpty) {
     final defaults = <String, Object?>{};
     final seenPrefixes = <String>{};
-    for (final key in overrides.keys) {
+    for (final key in keys) {
       final dot = key.indexOf('.');
       if (dot < 0) {
         defaults[key] = defaultFor(key);

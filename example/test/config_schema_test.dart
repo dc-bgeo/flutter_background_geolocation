@@ -59,4 +59,38 @@ void main() {
       expect(resolveDefault(null, isIOS: false), null);
     });
   });
+
+  group('appliesToPlatform / fieldsForPlatform', () {
+    test('an unmarked field applies to both platforms', () {
+      const field = ConfigField(key: 'x', label: 'x', type: FieldType.boolean);
+      expect(appliesToPlatform(field, isIOS: true), isTrue);
+      expect(appliesToPlatform(field, isIOS: false), isTrue);
+    });
+
+    test('a platform-tagged field applies only to its own platform', () {
+      const iosOnly =
+          ConfigField(key: 'x', label: 'x', type: FieldType.boolean, platform: 'ios');
+      expect(appliesToPlatform(iosOnly, isIOS: true), isTrue);
+      expect(appliesToPlatform(iosOnly, isIOS: false), isFalse);
+    });
+
+    // Regression guard for the recorded defect: these two keys are read only
+    // by the iOS engine (core/ios/Sources/BGGeoEngine.mm:1466/:1827 and :848)
+    // and are absent from core/android/engine entirely, so the Settings
+    // screen must not offer them on Android.
+    test('stationaryDistanceFilter and diagnosticExtras are iOS-only in the resolved field list',
+        () {
+      final iosKeys = fieldsForPlatform(isIOS: true).map((f) => f.key);
+      final androidKeys = fieldsForPlatform(isIOS: false).map((f) => f.key);
+      expect(iosKeys, containsAll(['stationaryDistanceFilter', 'diagnosticExtras']));
+      expect(androidKeys, isNot(contains('stationaryDistanceFilter')));
+      expect(androidKeys, isNot(contains('diagnosticExtras')));
+    });
+
+    test('an unmarked field (distanceFilter) is present in the resolved field list on both '
+        'platforms', () {
+      expect(fieldsForPlatform(isIOS: true).map((f) => f.key), contains('distanceFilter'));
+      expect(fieldsForPlatform(isIOS: false).map((f) => f.key), contains('distanceFilter'));
+    });
+  });
 }

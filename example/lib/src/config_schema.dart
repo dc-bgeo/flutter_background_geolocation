@@ -28,6 +28,14 @@ class PlatformDefault {
 Object? resolveDefault(Object? value, {required bool isIOS}) =>
     value is PlatformDefault ? (isIOS ? value.ios : value.android) : value;
 
+/// Whether [field] applies to the platform selected by [isIOS]. A field with
+/// no `platform` tag applies to both — same "common case needs no tag" rule
+/// [resolveDefault] uses for values. `isIOS` is a required parameter for the
+/// same reason: pure, unit-testable for both platforms without a `dart:io
+/// Platform` fake (which doesn't exist).
+bool appliesToPlatform(ConfigField field, {required bool isIOS}) =>
+    field.platform == null || field.platform == (isIOS ? 'ios' : 'android');
+
 class EnumOption {
   final String label;
   final Object value; // int | String
@@ -64,6 +72,11 @@ class ConfigField {
   /// `Platform.isIOS`). Passes through unchanged unless `defaultValue` is a
   /// [PlatformDefault].
   Object? get resolvedDefault => resolveDefault(defaultValue, isIOS: Platform.isIOS);
+
+  /// Whether this field applies to the CURRENT platform (`dart:io`'s
+  /// `Platform.isIOS`) — what the Settings screen uses to decide whether to
+  /// render a field.
+  bool get appliesToCurrentPlatform => appliesToPlatform(this, isIOS: Platform.isIOS);
 }
 
 class ConfigSection {
@@ -117,12 +130,17 @@ const configSections = <ConfigSection>[
         type: FieldType.number,
         unit: 'm',
         defaultValue: 200.0),
+    // iOS-only: read by the session engine's stationary distance gate
+    // (core/ios/Sources/BGGeoEngine.mm:1466, :1827). Zero occurrences under
+    // core/android/engine — a no-op on Android (already doc-tagged
+    // `@platform ios` on both SDKs' Config types).
     ConfigField(
         key: 'stationaryDistanceFilter',
         label: 'Stationary distance filter',
         type: FieldType.number,
         unit: 'm',
-        defaultValue: 75.0),
+        defaultValue: 75.0,
+        platform: 'ios'),
     ConfigField(
         key: 'stationaryDesiredAccuracy',
         label: 'Stationary accuracy',
@@ -336,11 +354,17 @@ const configSections = <ConfigSection>[
         ],
         defaultValue: 3,
         hint: 'native log persistence (mirror to logcat/os_log is always on)'),
+    // iOS-only: gates the per-point diagnostic snapshot
+    // (core/ios/Sources/BGGeoEngine.mm:848). Zero occurrences under
+    // core/android/engine — a no-op on Android today (not doc-tagged
+    // `@platform ios` on either SDK's Config, since Android support is on
+    // the backlog; re-evaluate this tag if/when that ships).
     ConfigField(
         key: 'diagnosticExtras',
         label: 'Diagnostic extras',
         type: FieldType.boolean,
-        defaultValue: false),
+        defaultValue: false,
+        platform: 'ios'),
     ConfigField(
         key: 'useSessionEngine',
         label: 'Session engine',
@@ -405,14 +429,28 @@ const configSections = <ConfigSection>[
   ]),
 ];
 
+/// The schema field for [key], searching every section.
+ConfigField? fieldFor(String key) {
+  for (final section in configSections) {
+    for (final field in section.fields) {
+      if (field.key == key) return field;
+    }
+  }
+  return null;
+}
+
+/// Every schema field (flattened across sections) that applies to the
+/// platform selected by [isIOS] — what the Settings screen renders and what
+/// `resetOverrides` is allowed to touch.
+List<ConfigField> fieldsForPlatform({required bool isIOS}) => [
+      for (final section in configSections)
+        for (final field in section.fields)
+          if (appliesToPlatform(field, isIOS: isIOS)) field,
+    ];
+
 /// Default value per key (`baseConfig` wins over the schema's, possibly
 /// per-platform, default).
 Object? defaultFor(String key) {
   if (baseConfig.containsKey(key)) return baseConfig[key];
-  for (final section in configSections) {
-    for (final field in section.fields) {
-      if (field.key == key) return field.resolvedDefault;
-    }
-  }
-  return null;
+  return fieldFor(key)?.resolvedDefault;
 }

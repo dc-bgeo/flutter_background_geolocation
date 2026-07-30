@@ -6,6 +6,8 @@
 /// mapping.
 library;
 
+import 'dart:convert';
+
 import 'package:bgeo_background_geolocation_example/src/config_schema.dart';
 import 'package:bgeo_background_geolocation_example/src/config_store.dart';
 import 'package:flutter/services.dart';
@@ -83,6 +85,35 @@ void main() {
     await applyOverride('notification.title', 'X');
     await resetOverrides();
     expect(setConfigCalls.last, {'notification': _defaultNotification});
+    expect(await loadOverrides(), isEmpty);
+  });
+
+  // Regression guard: stationaryDistanceFilter is iOS-only (platform: 'ios'
+  // in config_schema.dart). A value stuck in storage from before that tag
+  // existed (or from a shared-backup edge case) must not be re-pushed to the
+  // Android engine on reset — that would be a no-op push logged as noise.
+  test(
+      'resetOverrides on Android skips an iOS-only key even if one is stored, '
+      'and still clears it', () async {
+    await applyOverride('distanceFilter', 30.0);
+    final overrides = await loadOverrides();
+    overrides['stationaryDistanceFilter'] = 999.0; // simulate a stale/pre-existing override
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('bgeo:configOverrides', jsonEncode(overrides));
+
+    await resetOverrides(isIOS: false);
+
+    expect(setConfigCalls.last, {'distanceFilter': baseConfig['distanceFilter']});
+    expect(await loadOverrides(), isEmpty);
+  });
+
+  test('resetOverrides on iOS restores an iOS-only key', () async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('bgeo:configOverrides', jsonEncode({'stationaryDistanceFilter': 999.0}));
+
+    await resetOverrides(isIOS: true);
+
+    expect(setConfigCalls.last, {'stationaryDistanceFilter': 75.0});
     expect(await loadOverrides(), isEmpty);
   });
 
