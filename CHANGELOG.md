@@ -1,3 +1,13 @@
+## 0.1.5
+
+* Engine 0.13.2: a stationary device uploads again. `watchPosition` no longer
+  drops its `persist` option on the way to the per-tick fix, and
+  `getCurrentPosition(persist: true)` waits for a fresh fix instead of
+  resolving with the provider's replay of the last known location, which the
+  old same-timestamp dedup then silently discarded — so heartbeat records
+  never reached the server. Persist dedup is now by record identity
+  (stamp + channel). No Dart API changes.
+
 ## 0.1.4
 
 * **Breaking (types):** `Location.isMoving` is now `bool?` instead of `bool`.
