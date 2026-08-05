@@ -1,3 +1,12 @@
+## 0.1.6
+
+* Engine 0.13.3: `getState()` on Android now reports the health fields iOS has
+  always reported — `trackingActive`, `authorization`, and `lastRawFixAge` /
+  `lastAcceptedFixAge` (seconds, `null` until a fix arrives). The raw age is
+  stamped before the location filter runs, so the pair tells "the OS stopped
+  delivering fixes" apart from "the filter is rejecting them". Read them off
+  `state.raw`; no Dart API changes.
+
 ## 0.1.5
 
 * Engine 0.13.2: a stationary device uploads again. `watchPosition` no longer
