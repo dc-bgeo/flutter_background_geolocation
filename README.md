@@ -1,5 +1,8 @@
 # bgeo_background_geolocation
 
+[![downloads](https://img.shields.io/pub/dm/bgeo_background_geolocation?label=downloads&color=success)](https://pub.dev/packages/bgeo_background_geolocation)
+[![pub](https://img.shields.io/pub/v/bgeo_background_geolocation?label=pub&color=blue)](https://pub.dev/packages/bgeo_background_geolocation)
+
 **Reliable background geolocation for Flutter — iOS & Android.** Motion-aware
 tracking, an offline HTTP queue, geofences, and headless (killed-app) events,
 backed by the same closed-source BGeo engine used by the native SDKs — no
