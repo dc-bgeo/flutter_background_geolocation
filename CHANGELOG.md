@@ -1,3 +1,8 @@
+## 0.1.8
+
+* Engine 0.13.5: fix the iOS license-error banner rendering as an empty red
+  rectangle — the text had zero height. No Dart API changes.
+
 ## 0.1.7
 
 * Engine 0.13.4: a release build that fails the license check (`LICENSE_MISSING`,
