@@ -1,3 +1,9 @@
+## 0.2.0
+
+- Licensing: the `LICENSE` file is now the plain MIT license covering the
+  bridge sources; the proprietary engine-binary terms moved unchanged to
+  `LICENSE-BINARY.md`. No functional changes.
+
 ## 0.1.8
 
 * Engine 0.13.5: fix the iOS license-error banner rendering as an empty red

@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = 'bgeo_background_geolocation'
-  s.version          = '0.1.8'
+  s.version          = '0.2.0'
   s.summary          = 'Reliable background geolocation for Flutter (BGeo engine).'
   s.description      = 'Thin Flutter bridge over the closed-source BGeoCore engine (motion-aware tracking, offline HTTP queue, geofences).'
   s.homepage         = 'https://bgeo.dev'
   # Dual: bridge sources MIT, vendored BGeoCore.xcframework proprietary (LICENSE).
-  s.license          = { :type => 'Commercial', :file => '../LICENSE' }
+  s.license          = { :type => 'MIT (bridge) / Commercial (engine binary)', :file => '../LICENSE-BINARY.md' }
   s.author           = { 'BGeo' => 'dmitry.chistik@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*.{h,m}'

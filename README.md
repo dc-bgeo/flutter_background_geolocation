@@ -142,9 +142,9 @@ See [Boot & killed-app tracking](https://bgeo.dev/docs/flutter/guides/boot-and-k
 
 ## License
 
-This package is dual-licensed: the Dart/native bridge sources are MIT; the
-vendored `BGeoCore.xcframework` (iOS) and `bgeo-android` AAR (Android) are
-proprietary and require a license key in release builds. See
-[`LICENSE`](./LICENSE) for the full terms and
-[License keys](https://bgeo.dev/docs/flutter/getting-started/license/) for
-how keys work.
+The Dart/native bridge sources are **MIT** — see [`LICENSE`](./LICENSE).
+
+The precompiled engine (`ios/BGeoCore.xcframework`, the `dev.bgeo:bgeo-android`
+AAR) is **proprietary** and requires a license key in release builds — see
+[`LICENSE-BINARY.md`](./LICENSE-BINARY.md). Debug builds and the iOS simulator
+run without a key.
