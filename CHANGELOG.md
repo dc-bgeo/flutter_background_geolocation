@@ -1,3 +1,11 @@
+## 0.1.7
+
+* Engine 0.13.4: a release build that fails the license check (`LICENSE_MISSING`,
+  `LICENSE_INVALID`, `LICENSE_EXPIRED`, `LICENSE_APP_MISMATCH`) now shows a
+  persistent on-screen banner with the error code and app id. Previously
+  tracking was silently blocked — easy to ship without noticing. Debug builds
+  and the iOS simulator are unaffected. No Dart API changes.
+
 ## 0.1.6
 
 * Engine 0.13.3: `getState()` on Android now reports the health fields iOS has

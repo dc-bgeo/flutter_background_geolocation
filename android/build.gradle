@@ -1,5 +1,5 @@
 group = "com.bgeo.flutter"
-version = "0.1.6"
+version = "0.1.7"
 
 buildscript {
     repositories { google(); mavenCentral() }
@@ -34,7 +34,7 @@ repositories {
 dependencies {
     // Closed-source engine (FusedLocation, motion machine, HTTP queue). Its POM
     // pulls play-services-location + okhttp transitively.
-    api "dev.bgeo:bgeo-android:0.13.3"
+    api "dev.bgeo:bgeo-android:0.13.4"
     // App-level foreground signal for the logger's debounce flush.
     implementation "androidx.lifecycle:lifecycle-process:2.8.7"
 }
