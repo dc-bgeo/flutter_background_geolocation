@@ -11,9 +11,9 @@ Dart runs in the background.
 **Fully functional in DEBUG builds — no license required.** Every feature
 works unlicensed in debug builds and the iOS simulator, so you can evaluate
 the engine on a real device before buying anything. A key is only needed for
-release builds — see [License keys](https://bgeo.dev/docs/flutter/getting-started/license/).
+release builds — see [License keys](https://bgeo.dev/docs/flutter/getting-started/license/?utm_source=github&utm_medium=readme&utm_campaign=flutter).
 
-Full docs, guides, and API reference: **[bgeo.dev/docs/flutter](https://bgeo.dev/docs/flutter/)**.
+Full docs, guides, and API reference: **[bgeo.dev/docs/flutter](https://bgeo.dev/docs/flutter/?utm_source=github&utm_medium=readme&utm_campaign=flutter)**.
 
 ## Requirements
 
@@ -89,8 +89,8 @@ Enable the **Background Modes** capability (Location updates) under Runner →
 Signing & Capabilities in Xcode.
 
 Full walkthrough, including why each key/permission is required:
-[Installation](https://bgeo.dev/docs/flutter/getting-started/installation/) ·
-[Permissions & background location](https://bgeo.dev/docs/flutter/getting-started/permissions/).
+[Installation](https://bgeo.dev/docs/flutter/getting-started/installation/?utm_source=github&utm_medium=readme&utm_campaign=flutter) ·
+[Permissions & background location](https://bgeo.dev/docs/flutter/getting-started/permissions/?utm_source=github&utm_medium=readme&utm_campaign=flutter).
 
 ## Quick start
 
@@ -120,7 +120,7 @@ Future<void> startTracking() async {
 }
 ```
 
-See [Quickstart](https://bgeo.dev/docs/flutter/getting-started/quickstart/)
+See [Quickstart](https://bgeo.dev/docs/flutter/getting-started/quickstart/?utm_source=github&utm_medium=readme&utm_campaign=flutter)
 for the full `main.dart`, what to expect on first run, and common pitfalls.
 
 ## Headless events (app killed)
@@ -138,7 +138,7 @@ Future<void> headlessTask(bg.HeadlessEvent event) async {
 await bg.BackgroundGeolocation.registerHeadlessTask(headlessTask);
 ```
 
-See [Boot & killed-app tracking](https://bgeo.dev/docs/flutter/guides/boot-and-killed-app/).
+See [Boot & killed-app tracking](https://bgeo.dev/docs/flutter/guides/boot-and-killed-app/?utm_source=github&utm_medium=readme&utm_campaign=flutter).
 
 ## License
 
