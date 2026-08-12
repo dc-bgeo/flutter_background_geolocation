@@ -1,3 +1,12 @@
+## 0.2.1
+
+* Engine 0.14.0: iOS now keeps continuous location delivery after the system
+  relaunches the app in the background (overnight eviction, kill while
+  driving) instead of degrading to significant-change bursts of a few points
+  every 4–6 minutes. The upload queue is also flushed on every background
+  wake, so stop records no longer sit on the device until the next app open.
+  No Dart API changes.
+
 ## 0.2.0
 
 - Licensing: the `LICENSE` file is now the plain MIT license covering the
