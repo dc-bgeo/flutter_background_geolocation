@@ -42,6 +42,32 @@ void main() {
     expect(e.location, isNull);
   });
 
+  test('CrashEvent.fromMap parses a native payload', () {
+    final e = CrashEvent.fromMap({
+      'timestamp': '2026-08-17T10:00:00.000Z',
+      'peakG': 4.2,
+      'impactDurationMs': 180.0,
+      'preImpactSpeedMps': 12.5,
+      'location': nativeLocation,
+    });
+    expect(e.timestamp, '2026-08-17T10:00:00.000Z');
+    expect(e.peakG, 4.2);
+    expect(e.impactDurationMs, 180.0);
+    expect(e.preImpactSpeedMps, 12.5);
+    expect(e.location?.uuid, 'abc-123');
+  });
+
+  test('CrashEvent tolerates a null location', () {
+    final e = CrashEvent.fromMap({
+      'timestamp': '2026-08-17T10:00:00.000Z',
+      'peakG': 4.2,
+      'impactDurationMs': 180.0,
+      'preImpactSpeedMps': 12.5,
+      'location': null,
+    });
+    expect(e.location, isNull);
+  });
+
   test('Geofence roundtrip omits nulls', () {
     final g = Geofence(identifier: 'home', radius: 200, latitude: 52.0, longitude: 21.0);
     final m = g.toMap();

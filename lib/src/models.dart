@@ -154,6 +154,35 @@ class MotionChangeEvent {
   }
 }
 
+/// Only armed while moving, and off by default (`crashDetection.enabled`) —
+/// see [Config.crashDetection].
+class CrashEvent {
+  final String timestamp;
+  final double peakG;
+  final double impactDurationMs;
+  final double preImpactSpeedMps;
+  final Location? location;
+
+  CrashEvent({
+    required this.timestamp,
+    required this.peakG,
+    required this.impactDurationMs,
+    required this.preImpactSpeedMps,
+    this.location,
+  });
+
+  factory CrashEvent.fromMap(Map<Object?, Object?> map) {
+    final locMap = map['location'];
+    return CrashEvent(
+      timestamp: map['timestamp'] as String? ?? '',
+      peakG: (map['peakG'] as num?)?.toDouble() ?? 0,
+      impactDurationMs: (map['impactDurationMs'] as num?)?.toDouble() ?? 0,
+      preImpactSpeedMps: (map['preImpactSpeedMps'] as num?)?.toDouble() ?? 0,
+      location: locMap == null ? null : Location.fromMap(_castMap(locMap)),
+    );
+  }
+}
+
 class HeartbeatEvent {
   final Location? location;
   final Map<String, dynamic> raw;

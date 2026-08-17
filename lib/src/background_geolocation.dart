@@ -302,6 +302,14 @@ class BackgroundGeolocation {
     return sub;
   }
 
+  /// Only armed while moving, and off by default (`crashDetection.enabled`)
+  /// — see [Config.crashDetection].
+  static StreamSubscription<CrashEvent> onCrash(void Function(CrashEvent) cb) {
+    final sub = EventBridge.on('crash').map(CrashEvent.fromMap).listen(cb);
+    _subs.add(sub);
+    return sub;
+  }
+
   static StreamSubscription<GeofenceEvent> onGeofence(void Function(GeofenceEvent) cb) {
     final sub = EventBridge.on('geofence').map(GeofenceEvent.fromMap).listen(cb);
     _subs.add(sub);
