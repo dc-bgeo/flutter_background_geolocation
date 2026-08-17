@@ -323,6 +323,25 @@ const configSections = <ConfigSection>[
         type: FieldType.boolean,
         defaultValue: true),
   ]),
+  ConfigSection('Crash detection', [
+    ConfigField(
+        key: 'crashDetection.enabled',
+        label: 'Crash detection',
+        type: FieldType.boolean,
+        defaultValue: false),
+    ConfigField(
+        key: 'crashDetection.minSpeed',
+        label: 'Crash min speed',
+        type: FieldType.number,
+        unit: 'm/s',
+        defaultValue: 11.11),
+    ConfigField(
+        key: 'crashDetection.impactThreshold',
+        label: 'Crash impact threshold',
+        type: FieldType.number,
+        unit: 'g',
+        defaultValue: 4.0),
+  ]),
   ConfigSection('Application', [
     ConfigField(
         key: 'heartbeatInterval',

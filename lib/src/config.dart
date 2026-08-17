@@ -80,6 +80,37 @@ class Authorization {
   }
 }
 
+/// On-device collision detection. Off by default. When enabled, the engine
+/// samples the accelerometer at ~50 Hz while moving and emits a `crash`
+/// event when an impact signature (>= impactThreshold g, sustained,
+/// multi-axis, pre-impact speed >= minSpeed) is followed by a speed collapse.
+class CrashDetection {
+  /// default false
+  final bool? enabled;
+  /// Pre-impact speed gate in m/s. Default 11.11 (40 km/h).
+  final double? minSpeed;
+  /// Impact peak threshold in g. Default 4.0.
+  final double? impactThreshold;
+
+  const CrashDetection({
+    this.enabled,
+    this.minSpeed,
+    this.impactThreshold,
+  });
+
+  Map<String, dynamic> toMap() {
+    final m = <String, dynamic>{};
+    void put(String key, dynamic v) {
+      if (v != null) m[key] = v;
+    }
+
+    put('enabled', enabled);
+    put('minSpeed', minSpeed);
+    put('impactThreshold', impactThreshold);
+    return m;
+  }
+}
+
 /// Permissive config — only the keys the app passes are documented here.
 class Config {
   // The license key is NOT a config option — set it in the app manifest:
@@ -201,6 +232,8 @@ class Config {
   /// Requests a synthetic ENTER for geofences already-inside on registration
   /// (iOS requestStateForRegion / Android INITIAL_TRIGGER_ENTER). Default true.
   final bool? geofenceInitialTriggerEntry;
+  /// On-device collision detection. Off by default. See [CrashDetection].
+  final CrashDetection? crashDetection;
 
   const Config({
     this.locationAuthorizationRequest,
@@ -260,6 +293,7 @@ class Config {
     this.geofenceProximityRadius,
     this.maxMonitoredGeofences,
     this.geofenceInitialTriggerEntry,
+    this.crashDetection,
   });
 
   Map<String, dynamic> toMap() {
@@ -325,6 +359,7 @@ class Config {
     put('geofenceProximityRadius', geofenceProximityRadius);
     put('maxMonitoredGeofences', maxMonitoredGeofences);
     put('geofenceInitialTriggerEntry', geofenceInitialTriggerEntry);
+    put('crashDetection', crashDetection?.toMap());
     return m;
   }
 }

@@ -38,6 +38,17 @@ Notification _notificationFrom(Map<String, Object?> values) => Notification(
       priority: _i(values['notification.priority']),
     );
 
+/// True when [values] carries any `crashDetection.*` key — the nested object
+/// is only sent when the user has touched it (or on an explicit reset).
+bool _hasCrashDetection(Map<String, Object?> values) =>
+    values.keys.any((k) => k.startsWith('crashDetection.'));
+
+CrashDetection _crashDetectionFrom(Map<String, Object?> values) => CrashDetection(
+      enabled: _b(values['crashDetection.enabled']),
+      minSpeed: _d(values['crashDetection.minSpeed']),
+      impactThreshold: _d(values['crashDetection.impactThreshold']),
+    );
+
 /// Builds a [Config] patch from flat schema keys (dot paths included).
 Config configFrom(Map<String, Object?> values) => Config(
       desiredAccuracy: _i(values['desiredAccuracy']),
@@ -91,4 +102,5 @@ Config configFrom(Map<String, Object?> values) => Config(
       locationAuthorizationRequest: _s(values['locationAuthorizationRequest']),
       disableLocationAuthorizationAlert: _b(values['disableLocationAuthorizationAlert']),
       notification: _hasNotification(values) ? _notificationFrom(values) : null,
+      crashDetection: _hasCrashDetection(values) ? _crashDetectionFrom(values) : null,
     );

@@ -40,6 +40,12 @@ void main() {
         resolveDefault(_fieldDefault('minimumActivityRecognitionConfidence'), isIOS: false), 75);
   });
 
+  test('crashDetection defaults match types.ts (off, 11.11 m/s, 4.0 g)', () {
+    expect(_fieldDefault('crashDetection.enabled'), false);
+    expect(_fieldDefault('crashDetection.minSpeed'), 11.11);
+    expect(_fieldDefault('crashDetection.impactThreshold'), 4.0);
+  });
+
   group('resolveDefault', () {
     test('returns the iOS value on iOS and the Android value on Android for a divergent field',
         () {
