@@ -1,3 +1,13 @@
+## 0.2.2
+
+* Engine 0.14.1: parked iOS devices no longer burn 1 Hz GPS while the phone
+  is handled — the delivery stream is paused after the stop settles and
+  resumed in place on departure (no re-subscription, so background delivery
+  restarts within milliseconds). Also: the moving keep-alive retries after a
+  background-budget exhaustion in dead zones, and the missed-stop synthesizer
+  stands down while GPS-denied fixes are still arriving (no more backdated
+  stops in tunnels). No Dart API changes.
+
 ## 0.2.1
 
 * Engine 0.14.0: iOS now keeps continuous location delivery after the system
