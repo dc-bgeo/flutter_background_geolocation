@@ -120,12 +120,20 @@ class ProviderChangeEvent {
   final bool network;
   final int? accuracyAuthorization;
 
+  /// iOS 18+ only. `true` while location authorization is granted but iOS is
+  /// refusing background runtime because the app has not been opened since it
+  /// was relaunched in the background — tracking degrades to short wake bursts
+  /// until the user next brings the app to the foreground. Prompt the user to
+  /// open the app to restore continuous tracking. Always `null` on Android.
+  final bool? insufficientlyInUse;
+
   ProviderChangeEvent({
     required this.status,
     required this.enabled,
     required this.gps,
     required this.network,
     this.accuracyAuthorization,
+    this.insufficientlyInUse,
   });
 
   factory ProviderChangeEvent.fromMap(Map<Object?, Object?> map) {
@@ -135,6 +143,7 @@ class ProviderChangeEvent {
       gps: map['gps'] as bool? ?? false,
       network: map['network'] as bool? ?? false,
       accuracyAuthorization: (map['accuracyAuthorization'] as num?)?.toInt(),
+      insufficientlyInUse: map['insufficientlyInUse'] as bool?,
     );
   }
 }
