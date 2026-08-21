@@ -34,7 +34,7 @@ repositories {
 dependencies {
     // Closed-source engine (FusedLocation, motion machine, HTTP queue). Its POM
     // pulls play-services-location + okhttp transitively.
-    api "dev.bgeo:bgeo-android:0.14.1"
+    api "dev.bgeo:bgeo-android:0.15.0"
     // App-level foreground signal for the logger's debounce flush.
     implementation "androidx.lifecycle:lifecycle-process:2.8.7"
 }
