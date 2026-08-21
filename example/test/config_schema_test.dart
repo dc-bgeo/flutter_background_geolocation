@@ -46,6 +46,12 @@ void main() {
     expect(_fieldDefault('crashDetection.impactThreshold'), 4.0);
   });
 
+  test('distractionDetection defaults match types.ts (off, 5 m/s, 5 s)', () {
+    expect(_fieldDefault('distractionDetection.enabled'), false);
+    expect(_fieldDefault('distractionDetection.minSpeed'), 5.0);
+    expect(_fieldDefault('distractionDetection.minEpisodeSec'), 5.0);
+  });
+
   group('resolveDefault', () {
     test('returns the iOS value on iOS and the Android value on Android for a divergent field',
         () {

@@ -111,6 +111,37 @@ class CrashDetection {
   }
 }
 
+/// On-device distracted-driving detection. Off by default. While moving, the
+/// engine watches the shared ~50 Hz accelerometer stream (plus screen state
+/// on Android) for a phone-handling signature and emits a `distraction`
+/// event when an episode closes.
+class DistractionDetection {
+  /// default false
+  final bool? enabled;
+  /// Episode-open speed gate in m/s. Default 5.0 (18 km/h).
+  final double? minSpeed;
+  /// Minimum episode length in seconds; shorter handling is ignored. Default 5.
+  final double? minEpisodeSec;
+
+  const DistractionDetection({
+    this.enabled,
+    this.minSpeed,
+    this.minEpisodeSec,
+  });
+
+  Map<String, dynamic> toMap() {
+    final m = <String, dynamic>{};
+    void put(String key, dynamic v) {
+      if (v != null) m[key] = v;
+    }
+
+    put('enabled', enabled);
+    put('minSpeed', minSpeed);
+    put('minEpisodeSec', minEpisodeSec);
+    return m;
+  }
+}
+
 /// Permissive config — only the keys the app passes are documented here.
 class Config {
   // The license key is NOT a config option — set it in the app manifest:
@@ -234,6 +265,8 @@ class Config {
   final bool? geofenceInitialTriggerEntry;
   /// On-device collision detection. Off by default. See [CrashDetection].
   final CrashDetection? crashDetection;
+  /// On-device distracted-driving detection. Off by default. See [DistractionDetection].
+  final DistractionDetection? distractionDetection;
 
   const Config({
     this.locationAuthorizationRequest,
@@ -294,6 +327,7 @@ class Config {
     this.maxMonitoredGeofences,
     this.geofenceInitialTriggerEntry,
     this.crashDetection,
+    this.distractionDetection,
   });
 
   Map<String, dynamic> toMap() {
@@ -360,6 +394,7 @@ class Config {
     put('maxMonitoredGeofences', maxMonitoredGeofences);
     put('geofenceInitialTriggerEntry', geofenceInitialTriggerEntry);
     put('crashDetection', crashDetection?.toMap());
+    put('distractionDetection', distractionDetection?.toMap());
     return m;
   }
 }

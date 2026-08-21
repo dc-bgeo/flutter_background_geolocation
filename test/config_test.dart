@@ -22,8 +22,8 @@ void main() {
     expect(m.containsKey('logLevel'), false);
   });
 
-  test('Config.toMap covers all 58 keys when fully populated', () {
-    // Construct a Config with EVERY field set, assert toMap().length == 58.
+  test('Config.toMap covers all 59 keys when fully populated', () {
+    // Construct a Config with EVERY field set, assert toMap().length == 59.
     // Written out longhand — this test is the drift guard for the port.
     const c = Config(
       locationAuthorizationRequest: 'Always',
@@ -91,9 +91,10 @@ void main() {
       maxMonitoredGeofences: -1,
       geofenceInitialTriggerEntry: true,
       crashDetection: CrashDetection(enabled: true, minSpeed: 11.11, impactThreshold: 4.0),
+      distractionDetection: DistractionDetection(enabled: true, minSpeed: 5.0, minEpisodeSec: 5.0),
     );
     final m = c.toMap();
-    expect(m.length, 58);
+    expect(m.length, 59);
   });
 
   test('State keeps permissive access to unknown keys', () {

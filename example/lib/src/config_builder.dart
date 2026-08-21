@@ -49,6 +49,17 @@ CrashDetection _crashDetectionFrom(Map<String, Object?> values) => CrashDetectio
       impactThreshold: _d(values['crashDetection.impactThreshold']),
     );
 
+/// True when [values] carries any `distractionDetection.*` key — the nested
+/// object is only sent when the user has touched it (or on an explicit reset).
+bool _hasDistractionDetection(Map<String, Object?> values) =>
+    values.keys.any((k) => k.startsWith('distractionDetection.'));
+
+DistractionDetection _distractionDetectionFrom(Map<String, Object?> values) => DistractionDetection(
+      enabled: _b(values['distractionDetection.enabled']),
+      minSpeed: _d(values['distractionDetection.minSpeed']),
+      minEpisodeSec: _d(values['distractionDetection.minEpisodeSec']),
+    );
+
 /// Builds a [Config] patch from flat schema keys (dot paths included).
 Config configFrom(Map<String, Object?> values) => Config(
       desiredAccuracy: _i(values['desiredAccuracy']),
@@ -103,4 +114,6 @@ Config configFrom(Map<String, Object?> values) => Config(
       disableLocationAuthorizationAlert: _b(values['disableLocationAuthorizationAlert']),
       notification: _hasNotification(values) ? _notificationFrom(values) : null,
       crashDetection: _hasCrashDetection(values) ? _crashDetectionFrom(values) : null,
+      distractionDetection:
+          _hasDistractionDetection(values) ? _distractionDetectionFrom(values) : null,
     );

@@ -342,6 +342,25 @@ const configSections = <ConfigSection>[
         unit: 'g',
         defaultValue: 4.0),
   ]),
+  ConfigSection('Distraction detection', [
+    ConfigField(
+        key: 'distractionDetection.enabled',
+        label: 'Distraction detection',
+        type: FieldType.boolean,
+        defaultValue: false),
+    ConfigField(
+        key: 'distractionDetection.minSpeed',
+        label: 'Distraction min speed',
+        type: FieldType.number,
+        unit: 'm/s',
+        defaultValue: 5.0),
+    ConfigField(
+        key: 'distractionDetection.minEpisodeSec',
+        label: 'Distraction min episode',
+        type: FieldType.number,
+        unit: 's',
+        defaultValue: 5.0),
+  ]),
   ConfigSection('Application', [
     ConfigField(
         key: 'heartbeatInterval',
