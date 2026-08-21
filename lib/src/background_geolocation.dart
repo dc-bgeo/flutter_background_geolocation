@@ -310,6 +310,15 @@ class BackgroundGeolocation {
     return sub;
   }
 
+  /// Only armed while moving, and off by default
+  /// (`distractionDetection.enabled`) — see [Config.distractionDetection].
+  static StreamSubscription<DistractionEvent> onDistraction(
+      void Function(DistractionEvent) cb) {
+    final sub = EventBridge.on('distraction').map(DistractionEvent.fromMap).listen(cb);
+    _subs.add(sub);
+    return sub;
+  }
+
   static StreamSubscription<GeofenceEvent> onGeofence(void Function(GeofenceEvent) cb) {
     final sub = EventBridge.on('geofence').map(GeofenceEvent.fromMap).listen(cb);
     _subs.add(sub);

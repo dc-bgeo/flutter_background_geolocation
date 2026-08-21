@@ -192,6 +192,42 @@ class CrashEvent {
   }
 }
 
+/// On-device distracted-driving episode — see [Config.distractionDetection].
+///
+/// The `dds`/`ddc`/`ddd` closing keys ride every record built between the
+/// episode closing and the first record that is actually persisted, so a
+/// `sample: true` one-shot and the inline `location` embedded in this very
+/// event can each carry the closing keys more than once. The uploaded-record
+/// contract is unaffected, but don't count episodes off the location stream —
+/// this [DistractionEvent] fires exactly once per episode and is the thing
+/// to count.
+class DistractionEvent {
+  final String timestamp;
+  final String startTimestamp;
+  final double durationSec;
+  final String cause;
+  final Location? location;
+
+  DistractionEvent({
+    required this.timestamp,
+    required this.startTimestamp,
+    required this.durationSec,
+    required this.cause,
+    this.location,
+  });
+
+  factory DistractionEvent.fromMap(Map<Object?, Object?> map) {
+    final locMap = map['location'];
+    return DistractionEvent(
+      timestamp: map['timestamp'] as String? ?? '',
+      startTimestamp: map['startTimestamp'] as String? ?? '',
+      durationSec: (map['durationSec'] as num?)?.toDouble() ?? 0,
+      cause: map['cause'] as String? ?? '',
+      location: locMap == null ? null : Location.fromMap(_castMap(locMap)),
+    );
+  }
+}
+
 class HeartbeatEvent {
   final Location? location;
   final Map<String, dynamic> raw;

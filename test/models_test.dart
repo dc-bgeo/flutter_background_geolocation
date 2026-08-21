@@ -68,6 +68,32 @@ void main() {
     expect(e.location, isNull);
   });
 
+  test('DistractionEvent.fromMap parses a native payload', () {
+    final e = DistractionEvent.fromMap({
+      'timestamp': '2026-08-21T10:00:00.000Z',
+      'startTimestamp': '2026-08-21T09:59:50.000Z',
+      'durationSec': 10.0,
+      'cause': 's',
+      'location': nativeLocation,
+    });
+    expect(e.timestamp, '2026-08-21T10:00:00.000Z');
+    expect(e.startTimestamp, '2026-08-21T09:59:50.000Z');
+    expect(e.durationSec, 10.0);
+    expect(e.cause, 's');
+    expect(e.location?.uuid, 'abc-123');
+  });
+
+  test('DistractionEvent tolerates a null location', () {
+    final e = DistractionEvent.fromMap({
+      'timestamp': '2026-08-21T10:00:00.000Z',
+      'startTimestamp': '2026-08-21T09:59:50.000Z',
+      'durationSec': 10.0,
+      'cause': 's',
+      'location': null,
+    });
+    expect(e.location, isNull);
+  });
+
   test('Geofence roundtrip omits nulls', () {
     final g = Geofence(identifier: 'home', radius: 200, latitude: 52.0, longitude: 21.0);
     final m = g.toMap();
