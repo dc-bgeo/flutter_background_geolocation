@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'bgeo_background_geolocation'
-  s.version          = '0.3.0'
+  s.version          = '0.3.1'
   s.summary          = 'Reliable background geolocation for Flutter (BGeo engine).'
   s.description      = 'Thin Flutter bridge over the closed-source BGeoCore engine (motion-aware tracking, offline HTTP queue, geofences).'
   s.homepage         = 'https://bgeo.dev'

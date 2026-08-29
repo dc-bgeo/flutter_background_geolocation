@@ -210,6 +210,10 @@ class Config {
   /// it — satellites use stationaryRadius as their own radius, so a closer ring
   /// would contain the anchor. No-op on Android.
   final double? wakeRegionRingDistance;
+  /// @platform ios Experimental. Lay a chain of entry-monitored wake regions ahead along the course while moving, so a swipe-killed (never-in-use) process is woken by each crossing instead of only by the 5-min-throttled significant-change service. Default false. No-op on Android.
+  final bool? wakeTrailEnabled;
+  /// @platform ios Experimental. Regions in the wake trail (spaced 200 m, radius 100 m). Default 8, cap 18, 0 disables. Shares the reserved slots with the wake ring: app geofences are capped at 19 − max(wakeRegionRingCount, wakeTrailCount). No-op on Android.
+  final int? wakeTrailCount;
   /// @platform ios Low-power continuous wake distance; independent of the larger region radius. No-op on Android.
   final double? stationaryDistanceFilter;
   /// @platform ios Hold a background task while backgrounded+stationary. No-op on Android.
@@ -319,6 +323,8 @@ class Config {
     this.stationaryRadius,
     this.wakeRegionRingCount,
     this.wakeRegionRingDistance,
+    this.wakeTrailEnabled,
+    this.wakeTrailCount,
     this.stationaryDistanceFilter,
     this.preventSuspend,
     this.heartbeatInterval,
@@ -391,6 +397,8 @@ class Config {
     put('stationaryRadius', stationaryRadius);
     put('wakeRegionRingCount', wakeRegionRingCount);
     put('wakeRegionRingDistance', wakeRegionRingDistance);
+    put('wakeTrailEnabled', wakeTrailEnabled);
+    put('wakeTrailCount', wakeTrailCount);
     put('stationaryDistanceFilter', stationaryDistanceFilter);
     put('preventSuspend', preventSuspend);
     put('heartbeatInterval', heartbeatInterval);

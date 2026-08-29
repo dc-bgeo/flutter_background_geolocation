@@ -1,3 +1,10 @@
+## 0.3.1
+
+* Engine 0.16.9: exposes the experimental iOS wake trail that was already
+  compiled into the 0.3.0 binary but had no typed config — new keys
+  `wakeTrailEnabled` (default false) and `wakeTrailCount` (default 8). No
+  behaviour change unless you turn it on.
+
 ## 0.3.0
 
 * New events: `onCrash` (on-device collision detection, `crashDetection`
