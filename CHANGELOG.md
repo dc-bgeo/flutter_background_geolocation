@@ -1,3 +1,28 @@
+## 0.3.0
+
+* New events: `onCrash` (on-device collision detection, `crashDetection`
+  config) and `onDistraction` (phone handling while driving,
+  `distractionDetection` config; flagged fixes carry `dds`/`ddc`/`ddd`
+  extras). Both are off by default.
+* New config: `wakeRegionRingCount` / `wakeRegionRingDistance` (iOS wake ring
+  of entry-monitored satellites around the parked anchor — faster departure
+  wakes for a killed or suspended app; app geofences are now capped at
+  19 − ringCount, 11 by default) and `dormantOnStationary` /
+  `dormantWakeInterval` / `dormantGrace` (Android: drop the foreground service
+  while parked and take periodic Doze-proof fixes instead; off by default).
+* `ProviderChangeEvent.insufficientlyInUse` (iOS 17+): locationd refused the
+  background session; the engine falls back to the legacy location manager.
+* Engine 0.16.8 (iOS): session-refusal fallback, no background task on an
+  exhausted budget, wake decisions consult Core Motion activity history,
+  keep-alive no longer synthesizes a stop 36 s after a wake, 15 s first-fix
+  check after a refused-session wake, app-geofence regions namespaced
+  `com.bgeo.gf.*` with a one-time sweep of foreign regions on first launch
+  (re-register your own `CLRegion`s after that launch — see the geofencing
+  guide).
+* Engine 0.16.8 (Android): dormant mode with grace period, wake-upload
+  retries and a network-constrained flush job; parked service restarts
+  re-arm the stationary geofence; `watchPosition` stops on task-removed.
+
 ## 0.2.2
 
 * Engine 0.14.1: parked iOS devices no longer burn 1 Hz GPS while the phone

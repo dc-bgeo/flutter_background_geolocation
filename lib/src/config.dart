@@ -198,6 +198,18 @@ class Config {
   /// @platform ios Show the blue background-location pill under Always auth. false + Always also skips the session engine's CLBackgroundActivitySession to hide the pill (beta — needs field tests). No-op on Android.
   final bool? showsBackgroundLocationIndicator;
   final double? stationaryRadius;
+  /// @platform ios Satellites in the stationary wake ring (entry-monitored regions
+  /// around the parked anchor). 0 disables. Default 8. Each one takes a slot
+  /// from the 20-region iOS budget shared with app geofences: app geofences are
+  /// capped at 19 − wakeRegionRingCount concurrently monitored (11 by default),
+  /// and changing it at runtime re-balances the geofence budget. Counts 1–7 leave
+  /// directional gaps; use 0 or ≥ 8. No-op on Android.
+  final int? wakeRegionRingCount;
+  /// @platform ios Distance from the anchor to each satellite center, metres.
+  /// Default 2 × stationaryRadius; values below 2 × stationaryRadius are raised to
+  /// it — satellites use stationaryRadius as their own radius, so a closer ring
+  /// would contain the anchor. No-op on Android.
+  final double? wakeRegionRingDistance;
   /// @platform ios Low-power continuous wake distance; independent of the larger region radius. No-op on Android.
   final double? stationaryDistanceFilter;
   /// @platform ios Hold a background task while backgrounded+stationary. No-op on Android.
@@ -244,6 +256,19 @@ class Config {
   /// Keep a low-power location request alive while stationary (fast wake source
   /// on trip start). Default true; false restores fully-sleep-GPS (slower wake).
   final bool? stationaryKeepAlive;
+  /// Android only: drop the foreground service (and its permanent notification)
+  /// while parked, waking on a Doze-proof alarm instead of a live location
+  /// stream. Default false. Requires background location permission and takes
+  /// effect at the device's next park; costs trip-start latency.
+  final bool? dormantOnStationary;
+  /// Seconds between dormant wakes while [dormantOnStationary] is on. Default
+  /// 1800; floored at 60, and Doze floors inexact alarms again at ~9-15 min.
+  final int? dormantWakeInterval;
+
+  /// Android-only. Seconds to keep the low-power stationary stream after a park
+  /// before dropping the foreground service (dormantOnStationary); 0 = immediate.
+  /// Default 120.
+  final int? dormantGrace;
   /// Upload a compact native diagnostic snapshot in every point's `extras`
   /// (counters, app/motion state, manager config) — test devices only.
   final bool? diagnosticExtras;
@@ -292,6 +317,8 @@ class Config {
     this.stopTimeout,
     this.showsBackgroundLocationIndicator,
     this.stationaryRadius,
+    this.wakeRegionRingCount,
+    this.wakeRegionRingDistance,
     this.stationaryDistanceFilter,
     this.preventSuspend,
     this.heartbeatInterval,
@@ -321,6 +348,9 @@ class Config {
     this.maxRecordsToPersist,
     this.authorization,
     this.stationaryKeepAlive,
+    this.dormantOnStationary,
+    this.dormantWakeInterval,
+    this.dormantGrace,
     this.diagnosticExtras,
     this.useSessionEngine,
     this.geofenceProximityRadius,
@@ -359,6 +389,8 @@ class Config {
     put('stopTimeout', stopTimeout);
     put('showsBackgroundLocationIndicator', showsBackgroundLocationIndicator);
     put('stationaryRadius', stationaryRadius);
+    put('wakeRegionRingCount', wakeRegionRingCount);
+    put('wakeRegionRingDistance', wakeRegionRingDistance);
     put('stationaryDistanceFilter', stationaryDistanceFilter);
     put('preventSuspend', preventSuspend);
     put('heartbeatInterval', heartbeatInterval);
@@ -388,6 +420,9 @@ class Config {
     put('maxRecordsToPersist', maxRecordsToPersist);
     put('authorization', authorization?.toMap());
     put('stationaryKeepAlive', stationaryKeepAlive);
+    put('dormantOnStationary', dormantOnStationary);
+    put('dormantWakeInterval', dormantWakeInterval);
+    put('dormantGrace', dormantGrace);
     put('diagnosticExtras', diagnosticExtras);
     put('useSessionEngine', useSessionEngine);
     put('geofenceProximityRadius', geofenceProximityRadius);
