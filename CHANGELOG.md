@@ -1,3 +1,11 @@
+## 0.3.2
+
+* Engine 0.16.10: a non-finite compass sample (NaN rotation vector from the
+  sensor hub, seen on some Android devices right after `watchHeading`) crashed
+  the app with `JSONException: Forbidden numeric value: NaN`; a later NaN
+  silently froze the heading stream for the rest of the session. Such
+  samples are now dropped before they reach the smoother.
+
 ## 0.3.1
 
 * Engine 0.16.9: exposes the experimental iOS wake trail that was already
