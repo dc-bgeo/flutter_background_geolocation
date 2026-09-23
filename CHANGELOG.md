@@ -1,3 +1,13 @@
+## 0.3.3
+
+* Engine 0.16.11 (Android): a refused foreground-service start no longer
+  crashes the app. `LocationService` now calls `startForeground` before any
+  bail-out (stopping a `startForegroundService`-started service before
+  `startForeground` is fatal), the geofence wake receiver tolerates a refused
+  FGS exemption (seen on Android 16) and falls back to dormancy, and the boot
+  receiver skips the start without `ACCESS_BACKGROUND_LOCATION` instead of
+  hitting a `SecurityException`.
+
 ## 0.3.2
 
 * Engine 0.16.10: a non-finite compass sample (NaN rotation vector from the
